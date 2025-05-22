@@ -1,0 +1,125 @@
+<h2>New</h2>
+<canvas id="game" width="800" height="600">Your browser does not support canvas.</canvas>
+            <h1>Hello, Triangle!</h1>
+            <!-- BODY -->
+            <p>In order to start working with WebGL we need to initialise it.
+            To do that you need to access the canvas element you intend to draw on and saving it to a const.</p>
+            
+            <p>Then you need to get the context by accessing the newly created const (in this tutorial we will define it as `gl`) and calling <code><pre>gl.getContext('webgl')</pre></code></p>
+            
+            <p>At this point you should check that your const is not undefined / null and exit early if so.
+            That's it!</p>
+            
+            <hr/>
+            
+            <p>Now to set the background colour on the canvas you can run `gl.clearColor(0, 0, 0, 1)`.
+            The above colours are RGBA so this should default to black.
+            Refreshing the page should not show any changes howevere. Why? Because we need to clear the buffer.</p>
+            
+            <p>The buffer stores changes incrementally and then clearing it performs an actual draw to the canvas.
+            You can achieve this by running `gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);`</p>
+            
+            <p>Great. We now have a background with an arbitrary colour.</p>
+            
+            <hr/>
+            
+            <p>Now in order to start drawing shapes to the screen we need to build the graphics pipeline.
+            Lets start by writing our GLSL shaders.
+            Our vertex shader is responsible for drawing the lines which define our shape; it transforms 3D objects vertices into 2D screen coordinates.
+            Our vertex shader will look like the following;</p>
+        
+<pre><code>
+precision mediump float;
+        
+attribute vec2 vertPosition;
+        
+void main()
+{
+    gl_Position = vec4(vertPosition, 0.0, 1.0);
+}
+</code></pre>
+        
+            <p>next we will write our fragmentShader;
+            <b><i>// TODO - write-up more about what a fragment shader is / does.</i></b></p>
+        
+<pre><code>
+precision medium float;
+        
+void main()
+{
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</code></pre>
+        
+            <p>Now we have our vertex and fragment shaders, we can use them to begin drawing.</p>
+            
+            <p>To initialise a shader we run `gl.createShader(gl.VERTEX_SHADER);` or `gl.createShader(gl.FRAGMENT_SHADER);` depending on the type. 
+            Assign the output to an appropriately named variable, say `vertexShader` and then from that you can call `gl.shaderSource(vertexShader, vertexShaderText);`
+            Finally to compile the shader for use you should run `gl.compileShader(vertexShader);`.</p>
+            
+            <p>This process of compiling the shader may fail silently. To check the process you can run;</p>
+
+<pre><code>
+gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
+</code></pre>
+
+            <p>If this returns false / null then something went wrong on compile.
+            You can get details of the issue by running `gl.getShaderInfoLog(vertexShader);` to find out the specifics of what went wrong.</p>
+            
+            <p>Now we have our shaders, we need to create our program and link to our context.
+            To do this you run `gl.createProgram()` and assign to a variable, say `program`.
+            Then you run `gl.attachShader(program, vertexShader)` to make our shader available to the program, before running `gl.linkProgram(program)`.</p>
+        
+            <p>this point we can check the validity of our program by running `gl.getProgramParameter(program, gl.LINK_STATUS)` to check our program linked correctly.
+            The `getProgramParameter` works similarly to the `getShaderParameter` above.
+            We can also use `getProgramInfoLog` to get more accurate error reporting.
+            Another thing we can do is run `gl.validateProgram(program);` and then do a check on `gl.VALIDATE_STATUS` in the same manner.</p>
+            
+            <hr/>
+            
+            <p>Right, now we're going to begin drawing our triangle.</p>
+            
+            <p>Firstly we need to create a list of our vertices coordinates.
+            The coordinates we use are relative to our viewpoint, i.e screen coordinates.
+            The coordinates are, as follows, in X and Y pairs;</p>
+        
+<pre><code>
+const triangleVertices = [
+    0.0, 0.5,
+    -0.5, -0.5,
+    0.5, -0.5
+]
+</code></pre>
+        
+            <p>Now in order to start using our vertex data we need to create a "buffer", a space in the GPUs memory to pass data. To do this we run `const buffer = gl.createBuffer();` and then we bind this buffer to our context by running `gl.bindBuffer(gl.ARRAY_BUFFER, buffer);`.
+            Finally to send this data to our buffer we run `gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertices), gl.STATIC_DRAW);`</p>
+            
+            <p>Now we've send the data to the GPU we need to inform the vertexShader that the pairs of coordinates should map to the vec2 `vertPosition`.</p>
+        
+<pre><code>
+const positionAttributeLocation = gl.getAttribLocation(program, 'vertPosition');
+gl.vertexAttribPointer(
+    positionAttributeLocation,
+    2,
+    gl.FLOAT,
+    gl.FALSE,
+    2 * Float32Array.BYTES_PER_ELEMENT,
+    0
+);
+gl.enableVertexAttribArray(positionAttributeLocation);
+</code></pre>
+        
+            <p>Finally we will draw our triangle to the screen.
+            We will run `useProgram` to use the WebGL program we've created and then run `drawArrays`.</p>
+        
+<pre><code>
+gl.useProgram(program);
+gl.drawArrays(gl.TRIANGLES, 0, 3);
+</code></pre>
+        
+            <p>The `drawArrays` parameters are;</p>
+            <ol>
+            <li>The 'mode' for drawing (triangles is applicable in 99% of cases)</li>
+            <li>The 'offset' for our vertices, which is why we're setting 0 - we don't want to skip any</li>
+            <li>The number of vertices to draw; 3 is the number in a single triangle.</li>
+            </ol>
