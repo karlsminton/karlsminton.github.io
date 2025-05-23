@@ -27,6 +27,10 @@ jobs:
       -
         name: Run PHP script
         run: php compile.php
+
+      -
+        name: Debug files are in dist
+        run: ls dist
       
       -
         name: Deploy
