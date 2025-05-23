@@ -1,13 +1,21 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Edit</title>
-        <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
-        <script>
-            const editor = new EditorJS();
-        </script>
-    </head>
-    <body>
-        <p>Something</p>
-    </body>
-</html>
+<?php
+
+$src = __DIR__ . '/src';
+
+$scan = scandir($src);
+
+$files = array_filter($scan, function ($item) {
+    return strpos($item, '.') !== 0;
+});
+
+?>
+<h1>Articles</h1>
+<ul>
+    <?php foreach ($files as $file): ?>
+        <li>
+            <a href="edit.php?name=<?php echo $file; ?>">
+                <?= $file; ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+</ul>
