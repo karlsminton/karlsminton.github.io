@@ -1,3 +1,7 @@
+<?php
+include_once __DIR__ . '/globals.php';
+$article = $_GET['name'] ?? null;
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,10 +23,13 @@
         <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
     </head>
     <body>
-        <?php $article = $_GET['name'] ?? null; ?>
         <form action="/article.php" method="POST">
-            <input type="text" name="title" value="<?= $article ?>">
-            <textarea name="html"><?= file_get_contents(__DIR__ . '/src/' . $article) ?></textarea>
+            <label for="title">
+                <input type="text" name="title" value="<?= $article ?>">
+            </label>
+            <label name="html">
+                <textarea name="html"><?= file_get_contents(PAGES_DIR . '/' . $article) ?></textarea>
+            </label>
             <input type="submit">Submit</form>
         </form>
 

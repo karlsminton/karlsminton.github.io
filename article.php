@@ -1,7 +1,5 @@
 <?php
 
-//var_dump($_POST);
-
 $title = $_POST['title'] ?? null;
 $html = $_POST['html'] ?? null;
 
@@ -16,7 +14,7 @@ if (empty($html)) {
 //$handle = fopen(__DIR__ . '/src/' . $title, 'w');
 //fwrite($handle, $html);
 //fclose($handle);
-file_put_contents(__DIR__ . '/src/' . $title , $html);
+file_put_contents(__DIR__ . '/src/pages' . $title , $html);
 
 header("Location: index.php");
 exit;

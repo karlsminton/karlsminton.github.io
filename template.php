@@ -24,6 +24,6 @@
             <!-- BODY END -->
          </div>
          <footer></footer>
-        <script src="index.js"></script>
+        <script src="src/scripts/index.js"></script>
     </body>
 </html>
