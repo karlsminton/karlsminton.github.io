@@ -29,6 +29,10 @@ jobs:
         run: php compile.php
 
       -
+        name: Copy JS
+        run: cp src/scripts/* dist/ -R
+
+      -
         name: Debug files are in dist
         run: ls dist
       
