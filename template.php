@@ -31,12 +31,28 @@
                 color: #fff;
                 text-decoration: none;
             }
+            .links {
+                float: right;
+            }
+            .links > a {
+                max-width: 80px;
+                height: 80px;
+                padding: 10px;
+            }
         </style>
     </head>
     <body>
         <header>
             <div class="container">
-                <!-- Come up with a heading and link to linkedin / github -->
+                <?php // Come up with a heading and link to linkedin / github ?>
+                <div class="links">
+                    <a href="#">
+                        <img src="/github.png" />
+                    </a>
+                    <a href="#">
+                        <img src="/linkedin.png" />
+                    </a>
+                </div>
             </div>
         </header>
         <main class="container">

@@ -32,6 +32,9 @@ jobs:
         name: Copy JS
         run: cp src/scripts/* dist/ -R
 
+      - name: Copy Icons
+        run: cp src/icons/* dist/ -R
+
       -
         name: Debug files are in dist
         run: ls dist
