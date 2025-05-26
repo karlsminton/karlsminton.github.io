@@ -26,6 +26,8 @@
                 background: rgb(0, 0, 127.5);
                 margin-bottom: 15px;
                 color: #fff;
+                height: auto;
+                overflow: hidden;
             }
             .me > a {
                 color: #fff;
@@ -35,9 +37,13 @@
                 float: right;
             }
             .links > a {
-                max-width: 80px;
-                height: 80px;
+                max-width: 40px;
+                height: 40px;
                 padding: 10px;
+                float: left;
+            }
+            .links > a > img {
+                max-width: 100%;
             }
         </style>
     </head>
