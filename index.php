@@ -2,26 +2,7 @@
 
 include_once __DIR__ . '/globals.php';
 
-$iterator = new RecursiveDirectoryIterator(PAGES_DIR);
-
-$files = [];
-/** @var SplFileInfo $file */
-foreach(new RecursiveIteratorIterator($iterator) as $file) {
-    if (
-        !$file->isFile()
-        || $file->getExtension() !== 'html'
-    ) {
-        continue;
-    }
-
-    $filename = str_replace(
-        PAGES_DIR,
-        '',
-        $file->getRealPath()
-    );
-    $files[] = ltrim($filename, '/');
-}
-
+$files = getPages();
 
 ?>
 <h1>Articles</h1>

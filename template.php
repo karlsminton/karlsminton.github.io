@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Tutorial 01</title>
+        <title><?= $title ?></title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
@@ -18,11 +18,21 @@
     </head>
     <body>
         <header></header>
-        <div class="container">
-            <!-- BODY -->
-             <?= $contents ?>
-            <!-- BODY END -->
-         </div>
+        <main>
+            <aside>
+                <h3>All Articles</h3>
+                <ul>
+                    <?php foreach ($pages as $page): ?>
+                        <li><a href="<?= $page ?>"><?= $page ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </aside>
+            <section class="container">
+                <!-- BODY -->
+                 <?= $contents ?>
+                <!-- BODY END -->
+            </section>
+        </main>
          <footer></footer>
         <script src="index.js"></script>
     </body>
