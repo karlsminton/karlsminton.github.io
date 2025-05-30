@@ -45,6 +45,15 @@
             .links > a > img {
                 max-width: 100%;
             }
+
+            p > code {
+                border: 2px solid #aaa;
+                padding: 2px 5px;
+                border-radius: 5px;
+                color: #800;
+                background: #f3f3f3;
+                border-color: #aaa;
+            }
         </style>
     </head>
     <body>
@@ -71,12 +80,12 @@
                 </ul>
             </aside>
             <section>
-                <!-- BODY -->
-                 <?= $contents ?>
-                <!-- BODY END -->
+                <?= $contents ?>
             </section>
         </main>
          <footer></footer>
-        <script src="index.js"></script>
+         <!-- TODO: improve this mechanism with admin capabilities --> 
+         <!-- script to load should match the name of the page -->
+        <script src="<?= $scriptName ?>.js"></script>
     </body>
 </html>

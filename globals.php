@@ -17,6 +17,7 @@ function compile(string $file): void {
     $title = $matches[$titleArrayKey] ?? 'Page'; // todo get better default value
 
     $pages = getPages();
+    $scriptName = str_replace('.html', '', $file);
 
     include __DIR__ . '/template.php';
     $generated = ob_get_contents();
