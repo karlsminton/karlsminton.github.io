@@ -7,7 +7,7 @@
 <p>It will help if you've wrapped this in an event listener such as "DOMContentLoaded".</p>
 <p>At this point your code should look similar to this;</p>
 
-<code><pre>
+<pre><code>
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('game');
     const gl = canvas.getContext('webgl');
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <p>The buffer stores changes incrementally and then clearing it performs an actual draw to the canvas.<br>You can achieve this by running `gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);`</p>
 <p>Great. We now have a background with an arbitrary colour.</p>
 
-<code><pre>
+<pre><code>
 document.addEventListener("DOMContentLoaded", () => {
     //
     //
@@ -89,7 +89,7 @@ The `getProgramParameter` works similarly to the `getShaderParameter` above.</p>
 <p>We can also use `getProgramInfoLog` to get more accurate error reporting.<br>Another thing we can do is run `gl.validateProgram(program);` and then do a check on `gl.VALIDATE_STATUS` in the same manner.</p>
 <p>The newly added code should look like the following;</p>
 
-<code><pre>
+<pre><code>
 const vertexShaderData = `
 precision mediump float;
 
