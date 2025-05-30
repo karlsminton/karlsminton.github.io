@@ -86,6 +86,6 @@
          <footer></footer>
          <!-- TODO: improve this mechanism with admin capabilities --> 
          <!-- script to load should match the name of the page -->
-        <script src="<?= $scriptName ?>.js"></script>
+        <script src="/<?= $scriptName ?>.js"></script>
     </body>
 </html>
