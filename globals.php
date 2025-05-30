@@ -10,9 +10,10 @@ const DIST_DIR = __DIR__ . '/dist';
 
 function compile(string $file): void {
     ob_start();
-    $source = file_get_contents(PAGES_DIR . '/' . $file);
+    
+    $contents = file_get_contents(PAGES_DIR . '/' . $file);
 
-    preg_match('/<h1>(.*?)<\/h1>/', $source, $matches);
+    preg_match('/<h1>(.*?)<\/h1>/', $contents, $matches);
     $titleArrayKey = array_key_last($matches);
     $title = $matches[$titleArrayKey] ?? 'Page'; // todo get better default value
 
@@ -26,9 +27,6 @@ function compile(string $file): void {
     $destination = DIST_DIR . '/' . $file;
     $path = preg_replace('/\/[a-z]+\.html/', '', $destination);
 
-    // var_dump($file);
-    // var_dump($path);
-    // die();
     if (!is_dir($path)) {
         mkdir($path, 0777, true);
     }
