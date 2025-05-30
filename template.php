@@ -75,7 +75,7 @@
                 <h3>All Articles</h3>
                 <ul>
                     <?php foreach ($pages as $page): ?>
-                        <li><a href="<?= $page ?>"><?= $page ?></a></li>
+                        <li><a href="/<?= $page ?>"><?= $page ?></a></li>
                     <?php endforeach; ?>
                 </ul>
             </aside>
