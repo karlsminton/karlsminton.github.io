@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello, Triangle!</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/go.min.js"></script>
+        <script>hljs.highlightAll();</script>
+        <style>
+            body {
+                font-family: Calibri, Arial;
+                margin: 0;
+            }
+            .container {
+                max-width: 1200px;
+                margin: auto;
+            }
+            main {
+                display: flex;
+            }
+            aside {
+                min-width: 300px;
+                padding: 15px;
+            }
+            header {
+                background: rgb(0, 0, 127.5);
+                margin-bottom: 15px;
+                color: #fff;
+                height: auto;
+                overflow: hidden;
+            }
+            .me > a {
+                color: #fff;
+                text-decoration: none;
+            }
+            .links {
+                float: right;
+            }
+            .links > a {
+                max-width: 40px;
+                height: 40px;
+                padding: 10px;
+                float: left;
+            }
+            .links > a > img {
+                max-width: 100%;
+            }
+
+            p > code {
+                border: 2px solid #aaa;
+                padding: 2px 5px;
+                border-radius: 5px;
+                color: #800;
+                background: #f3f3f3;
+                border-color: #aaa;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                                <div class="links">
+                    <a href="#">
+                        <img src="/github.png" />
+                    </a>
+                    <a href="#">
+                        <img src="/linkedin.png" />
+                    </a>
+                </div>
+            </div>
+        </header>
+        <main class="container">
+            <aside>
+                <h3>All Articles</h3>
+                <ul>
+                                            <li><a href="/webgl/index.html">webgl/index.html</a></li>
+                                            <li><a href="/index.html">index.html</a></li>
+                                    </ul>
+            </aside>
+            <section>
+                <canvas id="game" width="800" height="600">Your browser does not support canvas.</canvas>
+<h1>Hello, Triangle!</h1>
+<!-- BODY -->
+<p>In order to start working with WebGL we need to initialise it by accessing your canvas element you intend to draw on and saving it to a const.</p>
+<p>Then you need to get the context by accessing the newly created const (in this tutorial we will define it as <code>gl</code>) and calling <code>gl.getContext('webgl')</code></p>            
+<p>At this point you should check that your const is not undefined / null and exit early if so.</p>
+<p>It will help if you've wrapped this in an event listener such as <code>"DOMContentLoaded"</code>.</p>
+<p>At this point your code should look similar to this;</p>
+
+<pre><code>
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById('game');
+    const gl = canvas.getContext('webgl');
+
+    if (!gl) {
+        console.error("gl was not set");
+        return;
+    }
+});
+</pre></code>
+            
+<hr/>
+            
+<p>Now to set the background colour on the canvas you can run <code>gl.clearColor(0, 0, 0, 1)</code> <i>(or any values from 0.0 to 1.0 for the first 3)</i>.</p>
+<p>The above colours are RGBA so this should default to black. Refreshing the page should not show any changes however. Why? Because we need to clear the buffer.</p>
+<p>The buffer stores changes incrementally and then clearing it performs an actual draw to the canvas.<br>You can achieve this by running <code>gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);</code></p>
+<p>Great. We now have a background with an arbitrary colour.</p>
+
+<pre><code>
+document.addEventListener("DOMContentLoaded", () => {
+    //
+    //
+    // etc
+
+    gl.clearColor(0.0, 0.0, 0.5, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+});
+</pre></code>
+
+<hr/>
+
+<p>Now in order to start drawing shapes to the screen we need to build the graphics pipeline. Lets start by writing our GLSL shaders.</p>
+<p>Our vertex shader is responsible for drawing the lines which define our shape; it transforms 3D objects vertices into 2D screen coordinates.<br>Our vertex shader will look like the following;</p>
+
+<pre><code>
+precision mediump float;
+
+attribute vec2 vertPosition;
+
+void main()
+{
+    gl_Position = vec4(vertPosition, 0.0, 1.0);
+}
+</code></pre>
+
+<p>next we will write our fragmentShader;
+<b><i>// TODO - write-up more about what a fragment shader is / does.</i></b></p>
+
+<pre><code>
+precision medium float;
+        
+void main()
+{
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</code></pre>
+<p>Now we have our vertex and fragment shaders, we can use them to begin drawing.</p>
+<p>To initialise a shader we run <code>gl.createShader(gl.VERTEX_SHADER);</code> or <code>gl.createShader(gl.FRAGMENT_SHADER);</code> depending on the type. 
+Assign the output to an appropriately named variable, <code>vertexShader</code> and then from that you can call <code>gl.shaderSource(vertexShader, vertexShaderText);</code><br>
+Finally to compile the shader for use you should run <code>gl.compileShader(vertexShader);</code>.</p>
+<p>This process of compiling the shader may fail silently. To check the process you can run;</p>
+<pre><code>
+gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
+</code></pre>
+<p>If this returns false / null then something went wrong on compile.
+You can get details of the issue by running <code>gl.getShaderInfoLog(vertexShader);</code> to find out the specifics of what went wrong.</p>
+            
+<p>Now we have our shaders, we need to create our program and link to our context.
+To do this you run <code>gl.createProgram()</code> and assign to a variable, in this case - <code>program</code>.
+Then you run <code>gl.attachShader(program, vertexShader)</code> to make our shader available to the program, before running <code>gl.linkProgram(program)</code>.</p>
+        
+<p>this point we can check the validity of our program by running <code>gl.getProgramParameter(program, gl.LINK_STATUS)</code> to check our program linked correctly.
+The <code>getProgramParameter</code> works similarly to the <code>getShaderParameter</code> above.</p>
+<p>We can also use <code>getProgramInfoLog</code> to get more accurate error reporting.<br>Another thing we can do is run <code>gl.validateProgram(program);</code> and then do a check on <code>gl.VALIDATE_STATUS</code> in the same manner.</p>
+<p>The newly added code should look like the following;</p>
+
+<pre><code>
+const vertexShaderData = `
+precision mediump float;
+
+attribute vec2 vertPosition;
+attribute vec3 vertColor;
+varying vec3 fragColor;
+
+void main()
+{
+    fragColor = vertColor;
+    gl_Position = vec4(vertPosition, 0.0, 1.0);
+}
+`;
+
+const fragmentShaderData = `
+precision mediump float;
+
+varying vec3 fragColor;
+
+void main()
+{
+    gl_FragColor = vec4(fragColor, 1.0);
+}
+`;
+
+document.addEventListener("DOMContentLoaded", () => {
+    //
+    //
+    // etc etc
+
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader, vertexShaderData);
+    gl.compileShader(vertexShader);
+
+    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+        let compileVertexError = gl.getShaderInfoLog(vertexShader);
+        console.error('error compiling vertex shader: ', compileVertexError);
+        return;
+    }
+
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader, fragmentShaderData);
+    gl.compileShader(fragmentShader);
+
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+        let compileFragmentError = gl.getShaderInfoLog(fragmentShader);
+        console.error('error compiling fragment shader: ', compileFragmentError);
+        return;
+    }
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        let compileProgramError = gl.getProgramInfoLog(program);
+        console.error('error compiling program: ', compileProgramError);
+        return;
+    }
+
+    // only do this not-in-production
+    gl.validateProgram(program);
+    if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
+        let validateProgramError = gl.getProgramInfoLog(program);
+        console.error('error validating program: ', validateProgramError);
+        return;
+    }
+});
+</pre></code>
+            
+<hr/>
+            
+<p>Right, now we're going to begin drawing our triangle.</p>
+            
+<p>Firstly we need to create a list of our vertices coordinates.
+The coordinates we use are relative to our viewpoint, i.e screen coordinates.
+The coordinates are, as follows, in X and Y pairs;</p>
+        
+<pre><code>
+const triangleVertices = [
+    0.0, 0.5,
+    -0.5, -0.5,
+    0.5, -0.5
+]
+</code></pre>
+        
+<p>Now in order to start using our vertex data we need to create a "buffer", a space in the GPUs memory to pass data. To do this we run `const buffer = gl.createBuffer();` and then we bind this buffer to our context by running `gl.bindBuffer(gl.ARRAY_BUFFER, buffer);`.
+Finally to send this data to our buffer we run `gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertices), gl.STATIC_DRAW);`</p>
+            
+<p>Now we've send the data to the GPU we need to inform the vertexShader that the pairs of coordinates should map to the vec2 `vertPosition`.</p>
+        
+<pre><code>
+const positionAttributeLocation = gl.getAttribLocation(program, 'vertPosition');
+gl.vertexAttribPointer(
+    positionAttributeLocation,
+    2,
+    gl.FLOAT,
+    gl.FALSE,
+    2 * Float32Array.BYTES_PER_ELEMENT,
+    0
+);
+gl.enableVertexAttribArray(positionAttributeLocation);
+</code></pre>
+        
+<p>Finally we will draw our triangle to the screen.
+We will run `useProgram` to use the WebGL program we've created and then run `drawArrays`.</p>
+        
+<pre><code>
+gl.useProgram(program);
+gl.drawArrays(gl.TRIANGLES, 0, 3);
+</code></pre>
+        
+<p>The `drawArrays` parameters are;</p>
+<ol>
+    <li>The 'mode' for drawing (triangles is applicable in 99% of cases)</li>
+    <li>The 'offset' for our vertices, which is why we're setting 0 - we don't want to skip any</li>
+    <li>The number of vertices to draw; 3 is the number in a single triangle.</li>
+</ol>
+            </section>
+        </main>
+         <footer></footer>
+         <!-- TODO: improve this mechanism with admin capabilities --> 
+         <!-- script to load should match the name of the page -->
+        <script src="/webgl/index.js"></script>
+    </body>
+</html>
